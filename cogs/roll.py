@@ -40,6 +40,10 @@ class RollCommand(commands.Cog):
 
         dice_type = int(dice_type_str)
 
+        if num_dice > 50 or dice_type > 5000:
+            await inter.response.send_message("For speed purposes and the discord character limit, we only take up to 50 rolls of d5000 dice. If you need to do more than 50, please divide it up into multiple messages.")
+            return
+
         # Debug output to verify input processing
         debug_roll_input = f'{num_dice}d{dice_type}' + (f'+{bonus}' if bonus else '')
         print(f"DEBUG: Roll Input is {debug_roll_input}")
@@ -55,9 +59,11 @@ class RollCommand(commands.Cog):
         total_roll += bonus
 
         print(f"DEBUG: Total roll is {total_roll}")
-        result_string = ""
+        result_string = f"Rolling **{roll_input}**\n\n"
         for index, roll in enumerate(individual_rolls, start=1):
             result_string += f"**Roll {index}:** {roll} *(d{dice_type})*\n"
+        if bonus != 0:
+            result_string += f"**Bonus: ** {bonus}\n"
         result_string += f"**Total:** {total_roll}"
         await inter.response.send_message(result_string)
 
